@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N3X49XL2');</script>
+<!-- End Google Tag Manager -->
+<!-- UTM 引き継ぎ -->
+<script>
+(function () {
+  var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content',
+              'utm_term', 'utm_id', 'fbclid', 'gclid', 'msclkid', 'yclid'];
+  var STORE = 'workl_utm';
+  var TTL = 30 * 24 * 60 * 60 * 1000;   // 30日で失効
+
+  function fromUrl() {
+    var out = {};
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      for (var i = 0; i < KEYS.length; i++) {
+        var v = sp.get(KEYS[i]);
+        if (v) out[KEYS[i]] = v;
+      }
+    } catch (e) {}
+    return out;
+  }
+
+  function load() {
+    try {
+      var raw = sessionStorage.getItem(STORE) || localStorage.getItem(STORE);
+      if (!raw) return null;
+      var o = JSON.parse(raw);
+      if (!o || (o.saved_at && Date.now() - o.saved_at > TTL)) return null;
+      return o;
+    } catch (e) { return null; }
+  }
+
+  function save(o) {
+    try {
+      var raw = JSON.stringify(o);
+      sessionStorage.setItem(STORE, raw);
+      localStorage.setItem(STORE, raw);
+    } catch (e) {}
+  }
+
+  var url = fromUrl();
+  var data;
+
+  if (Object.keys(url).length) {
+    // 広告からの流入：今回のパラメータで更新する
+    data = url;
+    data.landing_page = window.location.origin + window.location.pathname
+                      + window.location.search;
+    data.referrer = document.referrer || '';
+    data.saved_at = Date.now();
+    save(data);
+  } else {
+    // ページ遷移・直リンク：保存済みを引き継ぐ
+    var stored = load();
+    if (stored) {
+      data = stored;
+    } else {
+      data = {
+        landing_page: window.location.origin + window.location.pathname
+                    + window.location.search,
+        referrer: document.referrer || '',
+        saved_at: Date.now()
+      };
+      save(data);
+    }
+  }
+
+  window.WORKL_UTM = data;
+
+  // GTM から参照できるようにする
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'utm_ready',
+    utm_source: data.utm_source || '',
+    utm_medium: data.utm_medium || '',
+    utm_campaign: data.utm_campaign || '',
+    utm_content: data.utm_content || '',
+    utm_term: data.utm_term || ''
+  });
+
+  // --- 内部リンクにパラメータを引き継ぐ ---
+  function queryString() {
+    var a = [];
+    for (var i = 0; i < KEYS.length; i++) {
+      var k = KEYS[i];
+      if (data[k]) a.push(k + '=' + encodeURIComponent(data[k]));
+    }
+    return a.join('&');
+  }
+
+  // URL に UTM を付けて返す（既に付いていればそのまま）
+  function withUtm(url) {
+    var q = queryString();
+    if (!q || !url) return url;
+    if (url.indexOf('utm_') !== -1) return url;
+    var hash = '';
+    var i = url.indexOf('#');
+    if (i !== -1) { hash = url.slice(i); url = url.slice(0, i); }
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + q + hash;
+  }
+  window.WORKL_UTM_URL = withUtm;
+
+  function decorate(a) {
+    var href = a.getAttribute('href') || '';
+    if (!href || href.charAt(0) === '#') return;
+    if (/^(https?:|mailto:|tel:|javascript:)/i.test(href)) return;
+    a.setAttribute('href', withUtm(href));
+  }
+
+  // クリック時に書き換える（後から描画されるリンクにも対応するため）
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    while (t && t !== document) {
+      if (t.tagName === 'A') { decorate(t); return; }
+      t = t.parentNode;
+    }
+  }, true);
+})();
+</script>
+<!-- End UTM 引き継ぎ -->
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+window.EMAILJS_CONFIG = {
+  serviceId:  'service_kouut8q',
+  templateId: 'template_o0g2c1q',
+  publicKey:  'sMrpSn1ML7B3wwjHE'
+};
+if (window.emailjs) { emailjs.init({ publicKey: window.EMAILJS_CONFIG.publicKey }); }
+</script>
+<!-- End EmailJS -->
+<script src="./support.js"></script>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3X49XL2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<x-dc>
+<helmet>
+<title>資料ダウンロード（無料）｜WORKL</title>
+<meta name="description" content="100以上の求人媒体から成果の出る媒体へ出稿できる採用支援サービス「WORKL」の資料を無料でダウンロードいただけます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+@keyframes fv-fly{0%{opacity:0;transform:translate(0,0) scale(.7) rotate(-5deg)}12%{opacity:1}50%{transform:translate(140%,-35%) scale(.92) rotate(3deg)}82%{opacity:1;transform:translate(268%,-4%) scale(.55) rotate(0deg)}100%{opacity:0;transform:translate(278%,0) scale(.5)}}
+@keyframes fv-pop{0%,58%{opacity:.2}72%,100%{opacity:1}}
+@keyframes fv-dash{to{stroke-dashoffset:-12}}
+@keyframes fv-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes fv-twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+@keyframes pt-pop{0%,8%{opacity:0;transform:scale(.55)}22%,88%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.55)}}
+@keyframes pt-grow{0%,8%{transform:scaleY(.12)}40%,88%{transform:scaleY(1)}100%{transform:scaleY(.12)}}
+@keyframes pt-type{0%,6%{max-width:0}46%,90%{max-width:100%}100%{max-width:0}}
+@keyframes pt-ping{0%{box-shadow:0 0 0 0 rgba(234,122,31,.5)}70%{box-shadow:0 0 0 12px rgba(234,122,31,0)}100%{box-shadow:0 0 0 0 rgba(234,122,31,0)}}
+body{margin:0;font-family:'Noto Sans JP',sans-serif;color:#1F2D24;background:#E9F0EA;-webkit-font-smoothing:antialiased}
+a{color:#2F9461;text-decoration:none}
+a:hover{color:#25784E}
+.f-in{width:100%;box-sizing:border-box;font-family:inherit;font-size:16px;font-weight:500;color:#1F2D24;background:#fff;border:1px solid #D3E0D7;border-radius:8px;padding:14px;line-height:1.5;-webkit-appearance:none;appearance:none;outline:none;transition:border-color .15s,box-shadow .15s}
+.f-in::placeholder{color:#A7B6AC;font-weight:400}
+.f-in:focus{border-color:#2F9461;box-shadow:0 0 0 3px rgba(47,148,97,0.16)}
+select.f-in{padding-right:40px;cursor:pointer;background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232F9461' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:12px 8px}
+select.f-in:required:invalid{color:#A7B6AC;font-weight:400}
+select.f-in option{color:#1F2D24;font-weight:500}
+select.f-in option[value=""]{color:#A7B6AC}
+</style>
+</helmet>
+
+<div style="max-width:480px;margin:0 auto;background:#fff;box-shadow:0 0 44px rgba(31,45,36,0.10);position:relative">
+
+<header data-screen-label="01 ヘッダー" style="background:#fff;border-bottom:1px solid #E2ECE5">
+  <div style="padding:14px 20px;display:flex;flex-direction:column;gap:3px;align-items:center;text-align:center">
+    <a href="./index.html" style="display:block"><img src="./uploads/logo.png" alt="WORKL ワークル" style="height:32px;width:auto;display:block"></a>
+    <div style="font-size:9px;color:#5E7266;font-weight:500">100以上の求人媒体から<br>成果の出る媒体へ出稿できる採用支援サービス</div>
+  </div>
+  <div style="border-top:1px solid #EAF1EB;padding:11px 20px;display:flex;align-items:center;justify-content:center;gap:8px">
+    <div style="display:flex;align-items:center;gap:6px"><span style="flex:none;width:18px;height:18px;border-radius:50%;background:#2F9461;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900">1</span><span style="font-size:11.5px;font-weight:900;color:#1F2D24;white-space:nowrap">情報の入力</span></div>
+    <span style="display:block;width:22px;height:1px;background:#CFDFD5"></span>
+    <div style="display:flex;align-items:center;gap:6px"><span style="flex:none;width:18px;height:18px;border-radius:50%;background:#E2ECE5;color:#7C9084;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900">2</span><span style="font-size:11.5px;font-weight:700;color:#7C9084;white-space:nowrap">送信完了</span></div>
+  </div>
+</header>
+
+
+<section id="form" data-screen-label="02 お問い合わせフォーム" style="position:relative;overflow:hidden;background:linear-gradient(160deg,#F3F8F4 0%,#E9F3EC 100%);">
+  <svg aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 390 900" preserveAspectRatio="xMidYMid slice">
+    <circle cx="380" cy="80" r="90" fill="none" stroke="#CFE7D8" stroke-width="1.5"></circle>
+    <circle cx="10" cy="820" r="110" fill="none" stroke="#CFE7D8" stroke-width="1.5"></circle>
+  </svg>
+  <div style="position:relative;padding:52px 20px;display:flex;flex-direction:column;gap:22px">
+    <div style="text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="display:flex;align-items:center;gap:10px"><span style="display:block;width:24px;height:2px;background:#2F9461"></span><span style="font-size:12px;font-weight:700;letter-spacing:0.22em;color:#2F9461">FORM</span><span style="display:block;width:24px;height:2px;background:#2F9461"></span></div>
+      <h2 style="margin:0;font-size:22px;font-weight:900;line-height:1.6">3分で分かる資料を<br><span style="background:linear-gradient(transparent 60%,#FFE06B 60%)">無料ダウンロード</span></h2>
+      <p style="margin:0;font-size:12.5px;line-height:1.9;color:#5E7266">下記フォームにご入力ください。<br>ご入力のメールアドレスへ、資料をお送りします。</p>
+    </div>
+    <form onSubmit="{{ onSubmit }}" action="/contact/" method="post" noValidate="noValidate" style="background:#fff;border:1px solid #E2ECE5;border-radius:14px;padding:24px 18px;box-shadow:0 8px 22px rgba(31,45,36,0.08);display:flex;flex-direction:column;gap:20px">
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-issue" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">現在の課題<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <select id="f-issue" name="issue" required="required" class="f-in">
+          <option value="">選択してください</option>
+          <option>媒体に出稿しても応募が集まらない</option>
+          <option>採用コスト（媒体費・紹介手数料）が高い</option>
+          <option>採用業務に手が回らない／担当者が兼任</option>
+          <option>応募は来るが、求める人材とマッチしない</option>
+          <option>求人票の作成に手間がかかる／ノウハウがない</option>
+          <option>職種・エリアごとに募集したいが、掲載費が増える</option>
+          <option>どの媒体に出せばよいか分からない</option>
+          <option>まだ情報収集の段階</option>
+        </select>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-interest" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">興味を持ったポイント<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <select id="f-interest" name="interest" required="required" class="f-in">
+          <option value="">選択してください</option>
+          <option>100以上の媒体から、成果の出る媒体に出稿してくれる</option>
+          <option>応募単価1,000円の実績</option>
+          <option>プロのライターが求人票を代行作成してくれる</option>
+          <option>月額定額で、求人を好きなだけ掲載できる</option>
+          <option>元Indeedトップセールス監修／10,000事業所の実績</option>
+          <option>自社と同じ業種の導入事例があった</option>
+        </select>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-company" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">会社名<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <input id="f-company" name="company" type="text" required="required" autocomplete="organization" placeholder="例）株式会社キープサーチ" class="f-in">
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-name" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">お名前<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <input id="f-name" name="name" type="text" required="required" autocomplete="name" placeholder="例）山田 太郎" class="f-in">
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-email" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">メールアドレス<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <input id="f-email" name="email" type="email" required="required" autocomplete="email" inputmode="email" placeholder="例）yamada@example.co.jp" class="f-in">
+        <p style="margin:0;font-size:11px;line-height:1.8;color:#5E7266">※ こちらのアドレスへ資料をお送りします。キャリアメール（docomo・au・softbank）は受信できない場合があるため、<span style="font-weight:900;color:#1F2D24">会社・PCのメールアドレス</span>を推奨します。</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="f-tel" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1F2D24">電話番号<span style="flex:none;font-size:10px;font-weight:900;color:#fff;background:#EA7A1F;border-radius:3px;padding:3px 6px;line-height:1">必須</span></label>
+        <input id="f-tel" name="tel" type="tel" required="required" autocomplete="tel" inputmode="numeric" pattern="[0-9０-９\-ー－\s]{10,20}" placeholder="例）0312345678" class="f-in">
+        <p style="margin:0;font-size:11px;line-height:1.8;color:#5E7266">※ ハイフンなしでご入力いただけます。</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:2px">
+        <button type="submit" data-cta="cta_form_submit" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:#EA7A1F;color:#fff;border:none;border-radius:10px;padding:16px 24px;box-shadow:0 4px 0 #C25E0B;width:100%;box-sizing:border-box;font-family:inherit;cursor:pointer" style-hover="background:#D96C10;color:#fff">
+          <span style="font-size:14px;font-weight:700;opacity:0.95">＼最短30秒で入力完了／</span>
+          <span style="font-size:22px;font-weight:900">3分で分かる資料を無料DL</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:6px;color:#5E7266;font-size:11.5px;font-weight:700">
+          <svg viewBox="0 0 24 24" style="flex:none;width:13px;height:13px;display:block"><path d="M12 3 L20 6.5 V12 C20 16.5 16.6 20 12 21.5 C7.4 20 4 16.5 4 12 V6.5 Z" fill="none" stroke="#2F9461" stroke-width="2" stroke-linejoin="round"></path><path d="M8.5 12.2 L11 14.7 L15.5 10" fill="none" stroke="#2F9461" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span>無理な営業は一切いたしません</span>
+        </div>
+        <p style="margin:0;font-size:11px;line-height:1.8;color:#5E7266;text-align:center">送信をもって<a href="https://www.keep-search.co.jp/policy/" target="_blank" rel="noopener" style="font-weight:700;text-decoration:underline">プライバシーポリシー</a>に<br>ご同意いただいたものとみなします。</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer data-screen-label="03 フッター" style="background:#142A1F">
+  <div style="padding:40px 20px 28px;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+      <div style="background:#fff;border-radius:8px;padding:7px 12px"><img src="./uploads/logo.png" alt="WORKL ワークル" style="height:28px;display:block"></div>
+      <div style="font-size:11px;color:#93AC9C">100以上の求人媒体から<br>成果の出る媒体へ出稿できる採用支援サービス</div>
+    </div>
+    <nav style="display:flex;gap:16px;flex-wrap:wrap">
+      <a href="./index.html#logos" style="font-size:12px;color:#C2D6C8" style-hover="color:#fff">導入企業</a>
+      <a href="./index.html#cases" style="font-size:12px;color:#C2D6C8" style-hover="color:#fff">導入事例</a>
+      <a href="./index.html#compare" style="font-size:12px;color:#C2D6C8" style-hover="color:#fff">料金</a>
+      <a href="./index.html#faq" style="font-size:12px;color:#C2D6C8" style-hover="color:#fff">FAQ</a>
+      <a href="#form" style="font-size:12px;color:#C2D6C8" style-hover="color:#fff">お問い合わせ</a>
+    </nav>
+    <div style="border-top:1px solid #2A4A3A;padding-top:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="https://www.keep-search.co.jp/company/" target="_blank" rel="noopener" style="font-size:11px;color:#93AC9C;white-space:nowrap" style-hover="color:#fff">会社概要</a>
+        <a href="https://www.keep-search.co.jp/policy/" target="_blank" rel="noopener" style="font-size:11px;color:#93AC9C;white-space:nowrap" style-hover="color:#fff">プライバシーポリシー</a>
+        <a href="https://www.keep-search.co.jp/laws/" target="_blank" rel="noopener" style="font-size:11px;color:#93AC9C;white-space:nowrap" style-hover="color:#fff">個人情報保護方針</a>
+        <a href="https://www.keep-search.co.jp/security/" target="_blank" rel="noopener" style="font-size:11px;color:#93AC9C;white-space:nowrap" style-hover="color:#fff">情報セキュリティ基本方針</a>
+      </div>
+      <div style="font-size:11px;color:#93AC9C">© WORKL</div>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { sending: false };
+  renderVals() {
+    // 必須項目の定義（name属性 → ラベル／入力形式）
+    const FIELDS = [
+      { name: 'issue',    label: '現在の課題',           type: 'select' },
+      { name: 'interest', label: '興味を持ったポイント', type: 'select' },
+      { name: 'company',  label: '会社名',               type: 'text'   },
+      { name: 'name',     label: 'お名前',               type: 'text'   },
+      { name: 'email',    label: 'メールアドレス',       type: 'email'  },
+      { name: 'tel',      label: '電話番号',             type: 'tel'    }
+    ];
+
+    // 既存のエラー表示をすべて消す
+    const clearErrors = (form) => {
+      form.querySelectorAll('[data-err]').forEach((el) => el.remove());
+      FIELDS.forEach((f) => {
+        const el = form.elements[f.name];
+        if (el) { el.style.borderColor = ''; el.style.boxShadow = ''; }
+      });
+    };
+
+    // 1項目分のエラーを表示
+    const showError = (el, message) => {
+      el.style.borderColor = '#D93A2B';
+      el.style.boxShadow = '0 0 0 3px rgba(217,58,43,0.14)';
+      const p = document.createElement('p');
+      p.setAttribute('data-err', '');
+      p.style.cssText = 'margin:0;font-size:11.5px;font-weight:700;line-height:1.7;color:#D93A2B';
+      p.textContent = message;
+      el.insertAdjacentElement('afterend', p);
+    };
+
+    // 入力し直したらエラー表示を消す
+    const bindClear = (el) => {
+      if (el.dataset.errBound) return;
+      el.dataset.errBound = '1';
+      const reset = () => {
+        el.style.borderColor = '';
+        el.style.boxShadow = '';
+        const next = el.nextElementSibling;
+        if (next && next.hasAttribute('data-err')) next.remove();
+      };
+      el.addEventListener('input', reset);
+      el.addEventListener('change', reset);
+    };
+
+    const validate = (form) => {
+      clearErrors(form);
+      let firstInvalid = null;
+
+      FIELDS.forEach((f) => {
+        const el = form.elements[f.name];
+        if (!el) return;
+        bindClear(el);
+        const value = String(el.value || '').trim();
+        let message = '';
+
+        if (!value) {
+          message = f.type === 'select'
+            ? f.label + 'を選択してください'
+            : f.label + 'を入力してください';
+        } else if (f.type === 'email') {
+          if (!/^[^\s@]+@[^\s@,]+\.[A-Za-z]{2,}$/.test(value)) {
+            message = 'メールアドレスの形式が正しくありません（例：yamada@example.co.jp）';
+          }
+        } else if (f.type === 'tel') {
+          const digits = value.replace(/[^0-9０-９]/g, '').length;
+          if (digits < 10 || digits > 11) {
+            message = '電話番号は10〜11桁の数字でご入力ください（例：0312345678）';
+          }
+        }
+
+        if (message) {
+          showError(el, message);
+          if (!firstInvalid) firstInvalid = el;
+        }
+      });
+
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        try { firstInvalid.focus({ preventScroll: true }); } catch (err) { firstInvalid.focus(); }
+        return false;
+      }
+      return true;
+    };
+
+    return {
+      onSubmit: (e) => {
+        e.preventDefault();
+        const form = e.currentTarget || e.target;
+
+        // 必須未入力・形式エラーがある場合はここで停止（thanks.html へ進まない）
+        if (!validate(form)) return;
+
+        if (this.state.sending) return;
+        this.setState({ sending: true });
+        const data = Object.fromEntries(new FormData(form).entries());
+
+        const btn = form.querySelector('button[type="submit"]');
+        const btnHTML = btn ? btn.innerHTML : '';
+
+        // 送信中の見た目に切り替え（二重送信防止）
+        if (btn) {
+          btn.disabled = true;
+          btn.style.opacity = '0.6';
+          btn.style.cursor = 'wait';
+          btn.innerHTML = '<span style="font-size:20px;font-weight:900">送信中…</span>';
+        }
+        const restoreBtn = () => {
+          this.setState({ sending: false });
+          if (!btn) return;
+          btn.disabled = false;
+          btn.style.opacity = '';
+          btn.style.cursor = 'pointer';
+          btn.innerHTML = btnHTML;
+        };
+
+        // 前回の送信エラー表示を消す
+        form.querySelectorAll('[data-send-err]').forEach((el) => el.remove());
+        const showSendError = () => {
+          if (!btn || !btn.parentNode) { window.alert('送信に失敗しました。時間をおいて、もう一度お試しください。'); return; }
+          const p = document.createElement('p');
+          p.setAttribute('data-send-err', '');
+          p.style.cssText = 'margin:0 0 4px;padding:12px 14px;background:#FDECEA;border:1px solid #F3B8B0;border-radius:8px;font-size:12px;font-weight:700;line-height:1.8;color:#B3271A';
+          p.textContent = '送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。';
+          btn.parentNode.insertBefore(p, btn);
+          p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+
+        // EmailJS のテンプレートへ渡す変数
+        const cfg = window.EMAILJS_CONFIG || {};
+        const v = (k) => String(data[k] || '').trim() || '（未入力）';
+
+        // Meta広告などの流入パラメータ（未設定なら空文字）
+        const utm = window.WORKL_UTM || {};
+        const u = (k) => String(utm[k] || '').trim();
+        const toUtmUrl = window.WORKL_UTM_URL || ((x) => x);
+        const params = {
+          // 【お問い合わせ内容】
+          issue:           v('issue'),
+          interest_points: v('interest'),
+          // 【お客様情報】
+          company:         v('company'),
+          name:            v('name'),
+          email:           v('email'),
+          tel:             v('tel'),
+          // 【送信元】※UTM付きの完全なURLを渡す
+          page_url:        toUtmUrl(window.location.href),
+          submitted_at:    new Date().toLocaleString('ja-JP', { hour12: false }),
+          // 【広告・流入情報】
+          utm_source:      u('utm_source'),
+          utm_medium:      u('utm_medium'),
+          utm_campaign:    u('utm_campaign'),
+          utm_content:     u('utm_content'),
+          utm_term:        u('utm_term'),
+          utm_id:          u('utm_id'),
+          fbclid:          u('fbclid'),
+          landing_page:    u('landing_page') || toUtmUrl(window.location.href),
+          referrer:        u('referrer'),
+          // 件名・差出人（テンプレート設定欄で使用）
+          subject:         '【WORKL】資料ダウンロードのお問い合わせ（' + v('company') + '）',
+          from_name:       v('company') + ' ' + v('name'),
+          reply_to:        v('email'),
+          // 全項目をまとめた本文（テンプレートを1変数で済ませたい場合用）
+          message: [
+            '【お問い合わせ内容】',
+            '現在の課題：' + v('issue'),
+            '興味を持ったポイント：' + v('interest'),
+            '',
+            '【お客様情報】',
+            '会社名：' + v('company'),
+            'お名前：' + v('name'),
+            'メール：' + v('email'),
+            '電話：' + v('tel'),
+            '',
+            '【送信元】',
+            'ページURL：' + toUtmUrl(window.location.href),
+            '',
+            '【広告・流入情報】',
+            'utm_source：' + u('utm_source'),
+            'utm_medium：' + u('utm_medium'),
+            'utm_campaign：' + u('utm_campaign'),
+            'utm_content：' + u('utm_content'),
+            'utm_term：' + u('utm_term'),
+            'utm_id：' + u('utm_id'),
+            'fbclid：' + u('fbclid'),
+            '着地ページ：' + (u('landing_page') || toUtmUrl(window.location.href)),
+            '流入元：' + u('referrer')
+          ].join('\n')
+        };
+
+        const sending = (window.emailjs && cfg.serviceId && cfg.templateId)
+          ? window.emailjs.send(cfg.serviceId, cfg.templateId, params, { publicKey: cfg.publicKey })
+          : Promise.reject(new Error('EmailJS の読み込み／設定に失敗しています'));
+
+        sending.then(() => {
+          if (window.dataLayer) { window.dataLayer.push({ event: 'form_submit_success' }); }
+          window.location.href = './thanks.html';
+        }).catch((err) => {
+          console.error('[EmailJS] 送信に失敗しました', err);
+          restoreBtn();
+          showSendError();
+        });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
